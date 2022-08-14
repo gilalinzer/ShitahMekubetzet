@@ -1,18 +1,42 @@
 from pprint import pprint
 
-commentators = [' הרא"ש', ' תוספות ה"ר ישעיה']
-ans = {}
-intros = []
+commentators = ['רש"י', 'חננאל', 'יהונתן', 'רא"ש', 'מהר״י', 'תוספות ה"ר ישעיה', 'מאירי', 'תוספות שאנץ', 'רשב"א']
 
-text = open('/Users/gilalinzer/Desktop/Alhatorah/STMK-BK.txt', 'r', encoding="UTF-8")
+
+commentatorMap = {
+    'רשב"א': 'רשב"א',
+    'והרשב"א': 'רשב"א',
+    'הרשב"א': 'רשב"א',
+    'רא"ש': 'רא"ש',
+    'הרא"ש': 'רא"ש',
+    'מאירי': 'מאירי',
+    'המאירי': 'מאירי',
+    'והמאירי': 'מאירי',
+     'ישעיה': 'תוספות ה"ר ישעיה',
+    'ישעיה': 'תוספות ה"ר ישעיה',
+'מהר״י': 'מהר״י',
+    'למהר"י': 'מהר״י',
+    'ממהר"י': 'מהר״י',
+    'ומהר"י': 'מהר״י',
+    'חננאל': 'חננאל',
+    'יהונתן': 'יהונתן',
+    'רש"י': 'רש״י',
+    'ורש"י': 'רש״י',
+ 'שאנץ' : 'תוספות שאנץ'
+}
+ans = {}
+
+intros = ['תירץ','שתירץ']
+
+text = open('/Users/gilalinzer/Alhatorah/STMK-BK.txt', 'r', encoding="UTF-8")
 
 line = text.readline()
-paragraphs = []
+words = []
 # while the line is actual text
 while line != "":
-    Line1 = line.split('\n\n')
+    Line1 = line.split()
     for s in Line1:
-        paragraphs.append(s)
+        words.append(s)
     # move to next line of text
     line = text.readline()
 
@@ -21,24 +45,27 @@ while line != "":
 countComm = 0
 countSection = 0
 
-for paragraph in paragraphs:
-    # split up the paragraph into a list of each sentence
-    lines = paragraph.split('.')
-    section = ''
-    for sentence in lines:
-        # it's text of the peirush not the name of a person
-        if sentence not in commentators:
-            section += sentence
-        else:  # it's the name of a commentator
-            if sentence not in ans and section:  # if the commentator came at the end
-                # add that commentator's section to it's dictionary
-                ans[sentence] = section
-                # reset the section
-            elif section:
-                ans[sentence] += ('---------------------------' +section)
+section = ''
+for word in words:
 
-            elif not section or section in intros: # the name is before the comments
-                temp = sentence
+    # split up the paragraph into a list of each sentence
+
+    # it's text of the peirush not the name of a person
+    if word not in commentatorMap:
+        section += " " + word
+    else:  # it's the name of a commentator
+        if word not in ans and section:  # if the commentator came at the end
+            c = commentatorMap[word]
+            # add that commentator's section to it's dictionary
+            ans[c] = section
+            # reset the section
+        elif section:
+            ans[word] += ('---------------------------' + section)
+
+        elif not section or (section in commentatorMap):  # the name is before the comments
+            temp = word
+
 pprint(ans)
+# changes made
 
 # going t
